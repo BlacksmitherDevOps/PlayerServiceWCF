@@ -29,5 +29,9 @@ namespace PlayerService
             }
             return composite;
         }
+        void BogdanLoX()
+        {
+
+        }
     }
 }
