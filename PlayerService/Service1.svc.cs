@@ -35,7 +35,7 @@ namespace PlayerService
         }
         void BogdanLoX()
         {
-
+            Console.WriteLine("BlacksmitherDevOps");
         }
     }
 }
