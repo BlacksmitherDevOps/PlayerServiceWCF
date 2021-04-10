@@ -17,6 +17,10 @@ namespace PlayerService
             return string.Format("You entered: {0}", value);
         }
 
+        public string Bogdanpidor()
+        {
+            return "pidor";
+        }
         public CompositeType GetDataUsingDataContract(CompositeType composite)
         {
             if (composite == null)
