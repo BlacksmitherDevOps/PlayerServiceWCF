@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -17,11 +16,6 @@ namespace PlayerService
         {
             return string.Format("You entered: {0}", value);
         }
-
-        public void Bogdanpidor()
-        {
-             Console.WriteLine("Bogdan typo lox");
-        }
         public CompositeType GetDataUsingDataContract(CompositeType composite)
         {
             if (composite == null)
@@ -36,7 +30,7 @@ namespace PlayerService
         }
         void BogdanLoX()
         {
-            Console.WriteLine("BlacksmitherDevOps");
+
         }
     }
 }
