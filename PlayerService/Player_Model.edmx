@@ -1,0 +1,500 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Player_model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ContextKey" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="Model" Type="varbinary(max)" Nullable="false" />
+          <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Albums">
+          <Key>
+            <PropertyRef Name="Album_ID" />
+          </Key>
+          <Property Name="Album_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ImagePath" Type="nvarchar(max)" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="Singer_Singer_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="Playlists">
+          <Key>
+            <PropertyRef Name="Playlist_ID" />
+          </Key>
+          <Property Name="Playlist_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ImagePath" Type="nvarchar(max)" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="Custom" Type="bit" Nullable="false" />
+          <Property Name="User_User_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="Singers">
+          <Key>
+            <PropertyRef Name="Singer_ID" />
+          </Key>
+          <Property Name="Singer_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar(max)" />
+          <Property Name="LastName" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Track_Track_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="Tracks">
+          <Key>
+            <PropertyRef Name="Track_ID" />
+          </Key>
+          <Property Name="Track_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Path" Type="nvarchar(max)" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="Genre" Type="nvarchar(max)" />
+          <Property Name="Album_ID" Type="int" Nullable="false" />
+          <Property Name="TotalListens" Type="int" Nullable="false" />
+          <Property Name="Verification" Type="bit" Nullable="false" />
+          <Property Name="Track_Track_ID" Type="int" />
+          <Property Name="Playlist_Playlist_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="User_ID" />
+          </Key>
+          <Property Name="User_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NickName" Type="nvarchar(max)" />
+          <Property Name="Password" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar(max)" />
+          <Property Name="ImagePath" Type="nvarchar(max)" />
+          <Property Name="User_User_ID" Type="int" />
+        </EntityType>
+        <Association Name="FK_dbo_Albums_dbo_Singers_Singer_Singer_ID">
+          <End Role="Singers" Type="Self.Singers" Multiplicity="0..1" />
+          <End Role="Albums" Type="Self.Albums" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Singers">
+              <PropertyRef Name="Singer_ID" />
+            </Principal>
+            <Dependent Role="Albums">
+              <PropertyRef Name="Singer_Singer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Playlists_dbo_Users_User_User_ID">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Playlists" Type="Self.Playlists" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="Playlists">
+              <PropertyRef Name="User_User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Singers_dbo_Tracks_Track_Track_ID">
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="0..1" />
+          <End Role="Singers" Type="Self.Singers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="Singers">
+              <PropertyRef Name="Track_Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Tracks_dbo_Albums_Album_ID">
+          <End Role="Albums" Type="Self.Albums" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Albums">
+              <PropertyRef Name="Album_ID" />
+            </Principal>
+            <Dependent Role="Tracks">
+              <PropertyRef Name="Album_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID">
+          <End Role="Playlists" Type="Self.Playlists" Multiplicity="0..1" />
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Playlists">
+              <PropertyRef Name="Playlist_ID" />
+            </Principal>
+            <Dependent Role="Tracks">
+              <PropertyRef Name="Playlist_Playlist_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Tracks_dbo_Tracks_Track_Track_ID">
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="0..1" />
+          <End Role="Tracks1" Type="Self.Tracks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="Tracks1">
+              <PropertyRef Name="Track_Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Users_dbo_Users_User_User_ID">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Users1" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="Users1">
+              <PropertyRef Name="User_User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Player_modelStoreContainer">
+          <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Albums" EntityType="Self.Albums" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Playlists" EntityType="Self.Playlists" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Singers" EntityType="Self.Singers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tracks" EntityType="Self.Tracks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" Association="Self.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID">
+            <End Role="Singers" EntitySet="Singers" />
+            <End Role="Albums" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Playlists_dbo_Users_User_User_ID" Association="Self.FK_dbo_Playlists_dbo_Users_User_User_ID">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Playlists" EntitySet="Playlists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Singers_dbo_Tracks_Track_Track_ID" Association="Self.FK_dbo_Singers_dbo_Tracks_Track_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="Singers" EntitySet="Singers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Tracks_dbo_Albums_Album_ID" Association="Self.FK_dbo_Tracks_dbo_Albums_Album_ID">
+            <End Role="Albums" EntitySet="Albums" />
+            <End Role="Tracks" EntitySet="Tracks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID" Association="Self.FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID">
+            <End Role="Playlists" EntitySet="Playlists" />
+            <End Role="Tracks" EntitySet="Tracks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" Association="Self.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="Tracks1" EntitySet="Tracks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Users_dbo_Users_User_User_ID" Association="Self.FK_dbo_Users_dbo_Users_User_User_ID">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users1" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Player_model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="C__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Album">
+          <Key>
+            <PropertyRef Name="Album_ID" />
+          </Key>
+          <Property Name="Album_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Singer_Singer_ID" Type="Int32" />
+          <NavigationProperty Name="Singer" Relationship="Self.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" FromRole="Albums" ToRole="Singers" />
+          <NavigationProperty Name="Tracks" Relationship="Self.FK_dbo_Tracks_dbo_Albums_Album_ID" FromRole="Albums" ToRole="Tracks" />
+        </EntityType>
+        <EntityType Name="Playlist">
+          <Key>
+            <PropertyRef Name="Playlist_ID" />
+          </Key>
+          <Property Name="Playlist_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Custom" Type="Boolean" Nullable="false" />
+          <Property Name="User_User_ID" Type="Int32" />
+          <NavigationProperty Name="User" Relationship="Self.FK_dbo_Playlists_dbo_Users_User_User_ID" FromRole="Playlists" ToRole="Users" />
+          <NavigationProperty Name="Tracks" Relationship="Self.FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID" FromRole="Playlists" ToRole="Tracks" />
+        </EntityType>
+        <EntityType Name="Singer">
+          <Key>
+            <PropertyRef Name="Singer_ID" />
+          </Key>
+          <Property Name="Singer_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Track_Track_ID" Type="Int32" />
+          <NavigationProperty Name="Albums" Relationship="Self.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" FromRole="Singers" ToRole="Albums" />
+          <NavigationProperty Name="Track" Relationship="Self.FK_dbo_Singers_dbo_Tracks_Track_Track_ID" FromRole="Singers" ToRole="Tracks" />
+        </EntityType>
+        <EntityType Name="Track">
+          <Key>
+            <PropertyRef Name="Track_ID" />
+          </Key>
+          <Property Name="Track_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Genre" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Album_ID" Type="Int32" Nullable="false" />
+          <Property Name="TotalListens" Type="Int32" Nullable="false" />
+          <Property Name="Verification" Type="Boolean" Nullable="false" />
+          <Property Name="Track_Track_ID" Type="Int32" />
+          <Property Name="Playlist_Playlist_ID" Type="Int32" />
+          <NavigationProperty Name="Album" Relationship="Self.FK_dbo_Tracks_dbo_Albums_Album_ID" FromRole="Tracks" ToRole="Albums" />
+          <NavigationProperty Name="Playlist" Relationship="Self.FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID" FromRole="Tracks" ToRole="Playlists" />
+          <NavigationProperty Name="Singers" Relationship="Self.FK_dbo_Singers_dbo_Tracks_Track_Track_ID" FromRole="Tracks" ToRole="Singers" />
+          <NavigationProperty Name="Tracks1" Relationship="Self.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" FromRole="Tracks" ToRole="Tracks1" />
+          <NavigationProperty Name="Track1" Relationship="Self.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" FromRole="Tracks1" ToRole="Tracks" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="User_ID" />
+          </Key>
+          <Property Name="User_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NickName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="User_User_ID" Type="Int32" />
+          <NavigationProperty Name="Playlists" Relationship="Self.FK_dbo_Playlists_dbo_Users_User_User_ID" FromRole="Users" ToRole="Playlists" />
+          <NavigationProperty Name="Users1" Relationship="Self.FK_dbo_Users_dbo_Users_User_User_ID" FromRole="Users" ToRole="Users1" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_dbo_Users_dbo_Users_User_User_ID" FromRole="Users1" ToRole="Users" />
+        </EntityType>
+        <Association Name="FK_dbo_Albums_dbo_Singers_Singer_Singer_ID">
+          <End Role="Singers" Type="Self.Singer" Multiplicity="0..1" />
+          <End Role="Albums" Type="Self.Album" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Singers">
+              <PropertyRef Name="Singer_ID" />
+            </Principal>
+            <Dependent Role="Albums">
+              <PropertyRef Name="Singer_Singer_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Tracks_dbo_Albums_Album_ID">
+          <End Role="Albums" Type="Self.Album" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tracks" Type="Self.Track" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Albums">
+              <PropertyRef Name="Album_ID" />
+            </Principal>
+            <Dependent Role="Tracks">
+              <PropertyRef Name="Album_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Playlists_dbo_Users_User_User_ID">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Playlists" Type="Self.Playlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="Playlists">
+              <PropertyRef Name="User_User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID">
+          <End Role="Playlists" Type="Self.Playlist" Multiplicity="0..1" />
+          <End Role="Tracks" Type="Self.Track" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Playlists">
+              <PropertyRef Name="Playlist_ID" />
+            </Principal>
+            <Dependent Role="Tracks">
+              <PropertyRef Name="Playlist_Playlist_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Singers_dbo_Tracks_Track_Track_ID">
+          <End Role="Tracks" Type="Self.Track" Multiplicity="0..1" />
+          <End Role="Singers" Type="Self.Singer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="Singers">
+              <PropertyRef Name="Track_Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Tracks_dbo_Tracks_Track_Track_ID">
+          <End Role="Tracks" Type="Self.Track" Multiplicity="0..1" />
+          <End Role="Tracks1" Type="Self.Track" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="Tracks1">
+              <PropertyRef Name="Track_Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Users_dbo_Users_User_User_ID">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Users1" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="Users1">
+              <PropertyRef Name="User_User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Player_entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+          <EntitySet Name="Albums" EntityType="Self.Album" />
+          <EntitySet Name="Playlists" EntityType="Self.Playlist" />
+          <EntitySet Name="Singers" EntityType="Self.Singer" />
+          <EntitySet Name="Tracks" EntityType="Self.Track" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" Association="Self.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID">
+            <End Role="Singers" EntitySet="Singers" />
+            <End Role="Albums" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Tracks_dbo_Albums_Album_ID" Association="Self.FK_dbo_Tracks_dbo_Albums_Album_ID">
+            <End Role="Albums" EntitySet="Albums" />
+            <End Role="Tracks" EntitySet="Tracks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Playlists_dbo_Users_User_User_ID" Association="Self.FK_dbo_Playlists_dbo_Users_User_User_ID">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Playlists" EntitySet="Playlists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID" Association="Self.FK_dbo_Tracks_dbo_Playlists_Playlist_Playlist_ID">
+            <End Role="Playlists" EntitySet="Playlists" />
+            <End Role="Tracks" EntitySet="Tracks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Singers_dbo_Tracks_Track_Track_ID" Association="Self.FK_dbo_Singers_dbo_Tracks_Track_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="Singers" EntitySet="Singers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" Association="Self.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="Tracks1" EntitySet="Tracks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Users_dbo_Users_User_User_ID" Association="Self.FK_dbo_Users_dbo_Users_User_User_ID">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Users1" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Player_modelStoreContainer" CdmEntityContainer="Player_entities">
+          <EntitySetMapping Name="C__MigrationHistory">
+            <EntityTypeMapping TypeName="Player_model.C__MigrationHistory">
+              <MappingFragment StoreEntitySet="__MigrationHistory">
+                <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+                <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Albums">
+            <EntityTypeMapping TypeName="Player_model.Album">
+              <MappingFragment StoreEntitySet="Albums">
+                <ScalarProperty Name="Album_ID" ColumnName="Album_ID" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Singer_Singer_ID" ColumnName="Singer_Singer_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Playlists">
+            <EntityTypeMapping TypeName="Player_model.Playlist">
+              <MappingFragment StoreEntitySet="Playlists">
+                <ScalarProperty Name="Playlist_ID" ColumnName="Playlist_ID" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="Custom" ColumnName="Custom" />
+                <ScalarProperty Name="User_User_ID" ColumnName="User_User_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Singers">
+            <EntityTypeMapping TypeName="Player_model.Singer">
+              <MappingFragment StoreEntitySet="Singers">
+                <ScalarProperty Name="Singer_ID" ColumnName="Singer_ID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Track_Track_ID" ColumnName="Track_Track_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tracks">
+            <EntityTypeMapping TypeName="Player_model.Track">
+              <MappingFragment StoreEntitySet="Tracks">
+                <ScalarProperty Name="Track_ID" ColumnName="Track_ID" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Genre" ColumnName="Genre" />
+                <ScalarProperty Name="Album_ID" ColumnName="Album_ID" />
+                <ScalarProperty Name="TotalListens" ColumnName="TotalListens" />
+                <ScalarProperty Name="Verification" ColumnName="Verification" />
+                <ScalarProperty Name="Track_Track_ID" ColumnName="Track_Track_ID" />
+                <ScalarProperty Name="Playlist_Playlist_ID" ColumnName="Playlist_Playlist_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="Player_model.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="User_User_ID" ColumnName="User_User_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

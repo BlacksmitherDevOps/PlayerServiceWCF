@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -18,6 +19,15 @@ namespace PlayerService
 
         [OperationContract]
         CompositeType GetDataUsingDataContract(CompositeType composite);
+
+        [OperationContract]
+        List<string> BogdanLox();
+
+        [OperationContract]
+        byte[] GetFile();
+
+        [OperationContract]
+        void DownloadFile(byte[] arr);
 
         // TODO: Add your service operations here
     }
