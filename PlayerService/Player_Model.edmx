@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Player_model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище uh1294526_dbModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -40,10 +40,9 @@
             <PropertyRef Name="Singer_ID" />
           </Key>
           <Property Name="Singer_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FirstName" Type="nvarchar(max)" />
-          <Property Name="LastName" Type="nvarchar(max)" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Track_Track_ID" Type="int" />
+          <Property Name="Name" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Tracks">
           <Key>
@@ -156,7 +155,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Player_modelStoreContainer">
+        <EntityContainer Name="Хранилище uh1294526_dbModelContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Albums" EntityType="Self.Albums" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Playlists" EntityType="Self.Playlists" Schema="dbo" store:Type="Tables" />
@@ -196,7 +195,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="Player_model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="uh1294526_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="C__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -236,10 +235,9 @@
             <PropertyRef Name="Singer_ID" />
           </Key>
           <Property Name="Singer_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Track_Track_ID" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Albums" Relationship="Self.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" FromRole="Singers" ToRole="Albums" />
           <NavigationProperty Name="Track" Relationship="Self.FK_dbo_Singers_dbo_Tracks_Track_Track_ID" FromRole="Singers" ToRole="Tracks" />
         </EntityType>
@@ -362,7 +360,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Player_entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="Player_En" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
           <EntitySet Name="Albums" EntityType="Self.Album" />
           <EntitySet Name="Playlists" EntityType="Self.Playlist" />
@@ -403,9 +401,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Player_modelStoreContainer" CdmEntityContainer="Player_entities">
+        <EntityContainerMapping StorageEntityContainer="Хранилище uh1294526_dbModelContainer" CdmEntityContainer="Player_En">
           <EntitySetMapping Name="C__MigrationHistory">
-            <EntityTypeMapping TypeName="Player_model.C__MigrationHistory">
+            <EntityTypeMapping TypeName="uh1294526_dbModel.C__MigrationHistory">
               <MappingFragment StoreEntitySet="__MigrationHistory">
                 <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
                 <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
@@ -415,7 +413,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Albums">
-            <EntityTypeMapping TypeName="Player_model.Album">
+            <EntityTypeMapping TypeName="uh1294526_dbModel.Album">
               <MappingFragment StoreEntitySet="Albums">
                 <ScalarProperty Name="Album_ID" ColumnName="Album_ID" />
                 <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
@@ -425,7 +423,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Playlists">
-            <EntityTypeMapping TypeName="Player_model.Playlist">
+            <EntityTypeMapping TypeName="uh1294526_dbModel.Playlist">
               <MappingFragment StoreEntitySet="Playlists">
                 <ScalarProperty Name="Playlist_ID" ColumnName="Playlist_ID" />
                 <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
@@ -437,18 +435,17 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Singers">
-            <EntityTypeMapping TypeName="Player_model.Singer">
+            <EntityTypeMapping TypeName="uh1294526_dbModel.Singer">
               <MappingFragment StoreEntitySet="Singers">
                 <ScalarProperty Name="Singer_ID" ColumnName="Singer_ID" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Track_Track_ID" ColumnName="Track_Track_ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Tracks">
-            <EntityTypeMapping TypeName="Player_model.Track">
+            <EntityTypeMapping TypeName="uh1294526_dbModel.Track">
               <MappingFragment StoreEntitySet="Tracks">
                 <ScalarProperty Name="Track_ID" ColumnName="Track_ID" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
@@ -463,7 +460,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="Player_model.User">
+            <EntityTypeMapping TypeName="uh1294526_dbModel.User">
               <MappingFragment StoreEntitySet="Users">
                 <ScalarProperty Name="User_ID" ColumnName="User_ID" />
                 <ScalarProperty Name="NickName" ColumnName="NickName" />
@@ -491,7 +488,7 @@
         <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
-        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->
