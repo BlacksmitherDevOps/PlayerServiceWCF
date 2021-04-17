@@ -21,7 +21,7 @@ namespace PlayerService
         CompositeType GetDataUsingDataContract(CompositeType composite);
 
         [OperationContract]
-        List<string> BogdanLox();
+        void AddNewSinger(Song_Singer NewSinger);
 
         [OperationContract]
         byte[] GetFile();
@@ -53,5 +53,63 @@ namespace PlayerService
             get { return stringValue; }
             set { stringValue = value; }
         }
+    }
+    [DataContract]
+    public class Song
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public int Path { get; set; }
+        [DataMember]
+        public string Genre { get; set; }
+        [DataMember]
+        public int TotalListens { get; set; }
+        [DataMember]
+        public bool Verification { get; set; }
+        [DataMember]
+        public int Album_ID { get; set; }
+        [DataMember]
+        public ICollection<Song_Singer> Singers { get; set; }
+    }
+    [DataContract]
+    public class Song_Singer
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public ICollection<Singer_Album> Albums { get; set; }
+    }
+    [DataContract]
+    public class Singer_Album
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public int Title { get; set; }
+        [DataMember]
+        public string ImagePath { get; set; }
+        [DataMember]
+        public ICollection<Song> Songs { get; set; }
+    }
+    [DataContract]
+    public class Song_Playlist
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public int Title { get; set; }
+        [DataMember]
+        public string ImagePath { get; set; }
+        [DataMember]
+        public DateTime CreationDate { get; set; }
+        [DataMember]
+        public bool Custom { get; set; }
+        [DataMember]
+        public ICollection<Song> Songs { get; set; }
     }
 }
