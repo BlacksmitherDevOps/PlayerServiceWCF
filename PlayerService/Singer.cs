@@ -18,15 +18,16 @@ namespace PlayerService
         public Singer()
         {
             this.Albums = new HashSet<Album>();
+            this.Tracks = new HashSet<Track>();
         }
     
         public int Singer_ID { get; set; }
         public string Description { get; set; }
-        public Nullable<int> Track_Track_ID { get; set; }
         public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Album> Albums { get; set; }
-        public virtual Track Track { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Track> Tracks { get; set; }
     }
 }

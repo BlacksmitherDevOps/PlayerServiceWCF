@@ -17,8 +17,8 @@ namespace PlayerService
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Track()
         {
-            this.Singers = new HashSet<Singer>();
             this.Tracks1 = new HashSet<Track>();
+            this.Singers = new HashSet<Singer>();
         }
     
         public int Track_ID { get; set; }
@@ -34,9 +34,9 @@ namespace PlayerService
         public virtual Album Album { get; set; }
         public virtual Playlist Playlist { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Singer> Singers { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Track> Tracks1 { get; set; }
         public virtual Track Track1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Singer> Singers { get; set; }
     }
 }
