@@ -123,7 +123,8 @@ namespace PlayerService
             return new Song_Singer()
             {
                 ID = singer.Singer_ID,
-                Name = singer.Name
+                Name = singer.Name,
+                Albums = ConvertToSingerAlbumListTitleOnly(singer.Albums)
             };
         }
         List<Song_Singer> ConvertToListSong_Singers(ICollection<Singer> singes)
@@ -157,6 +158,44 @@ namespace PlayerService
             }
             return songs;
         }
+        Singer_Album ConvertToSingerAlbum(Album album)
+        {
+            Singer_Album singer_Album = new Singer_Album()
+            {
+                ID = album.Album_ID,
+                Image = File.ReadAllBytes(album.ImagePath),
+                Singer = ConvertToSinger(album.Singer),
+                Title = album.Title,
+            };
+            return singer_Album;
+        }
+        Singer_Album ConvertToSingerAlbumTitleOnly(Album album)
+        {
+            Singer_Album singer_Album = new Singer_Album()
+            {
+                ID = album.Album_ID,
+                Title = album.Title,
+            };
+            return singer_Album;
+        }
+        List<Singer_Album> ConvertToSingerAlbumList(ICollection<Album> sourceAlbums)
+        {
+            List<Singer_Album> albums = new List<Singer_Album>();
+            foreach (var item in sourceAlbums)
+            {
+                albums.Add(ConvertToSingerAlbum(item));
+            }
+            return albums;
+        }
+        List<Singer_Album> ConvertToSingerAlbumListTitleOnly(ICollection<Album> sourceAlbums)
+        {
+            List<Singer_Album> albums = new List<Singer_Album>();
+            foreach (var item in sourceAlbums)
+            {
+                albums.Add(ConvertToSingerAlbumTitleOnly(item));
+            }
+            return albums;
+        }
         #endregion
         public Singer_Album GetAlbum(int ID)
         {
@@ -177,6 +216,25 @@ namespace PlayerService
             Track track = (from tr in db.Tracks where tr.Track_ID == ID select tr).First();
             Stream st = new FileStream(track.Path, FileMode.Open, FileAccess.Read);
             return st;
+        }
+
+        public Song_Singer GetSinger(int ID)
+        {
+            Singer singer = (from sin in db.Singers where sin.Singer_ID == ID select sin).First();
+            return new Song_Singer()
+            {
+                ID = singer.Singer_ID,
+                Name = singer.Name,
+                Description = singer.Description,
+                Albums = ConvertToSingerAlbumList(singer.Albums)
+            };
+        }
+
+
+        List<Song_Singer> IService1.GetAllSingers()
+        {
+            var singers = (from sin in db.Singers select sin).ToArray();
+            return ConvertToListSong_Singers(singers);
         }
     }
 }
