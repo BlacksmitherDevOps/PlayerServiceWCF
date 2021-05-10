@@ -30,6 +30,7 @@ namespace PlayerService
         public bool Verification { get; set; }
         public Nullable<int> Track_Track_ID { get; set; }
         public Nullable<int> Playlist_Playlist_ID { get; set; }
+        public System.TimeSpan Duration { get; set; }
     
         public virtual Album Album { get; set; }
         public virtual Playlist Playlist { get; set; }

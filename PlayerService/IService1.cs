@@ -21,12 +21,15 @@ namespace PlayerService
         Singer_Album GetAlbum(int ID);
         [OperationContract]
         Singer_Album TempAlbum();
+
+        [OperationContract]
+        List<Song_Singer> GetAllSingers();
         [OperationContract]
         Stream GetTrackStream(int ID);
         [OperationContract]
         void AddNewAlbum(Singer_Album NewAlbum);
         [OperationContract]
-        byte[] GetFile();
+        void GetFile();
 
         [OperationContract]
         void DownloadFile(byte[] arr);
@@ -56,6 +59,8 @@ namespace PlayerService
         [DataMember]
         public int Album_ID { get; set; }
         [DataMember]
+        public TimeSpan Duration { get; set; }
+        [DataMember]
         public ICollection<Song_Singer> Singers { get; set; }
         public ICollection<Song> Songs { get; set; }
     }
@@ -68,6 +73,10 @@ namespace PlayerService
         public string Name { get; set; }
         [DataMember]
         public string Description { get; set; }
+        [DataMember]
+        public byte[] Image { get; set; }
+        [DataMember]
+        public string ImagePath { get; set; }
         [DataMember]
         public ICollection<Singer_Album> Albums { get; set; }
     }
