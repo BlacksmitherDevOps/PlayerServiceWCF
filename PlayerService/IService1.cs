@@ -15,30 +15,45 @@ namespace PlayerService
     {
         [OperationContract]
         void AddNewSinger(Song_Singer NewSinger);
+
         [OperationContract]
         void AddNewTrack(Song NewSong);
+
         [OperationContract]
         Singer_Album GetAlbum(int ID);
-        [OperationContract]
-        Singer_Album TempAlbum();
 
         [OperationContract]
         List<Song_Singer> GetAllSingers();
+
         [OperationContract]
         Stream GetTrackStream(int ID);
+
         [OperationContract]
         void AddNewAlbum(Singer_Album NewAlbum);
+
         [OperationContract]
         void GetFile();
 
         [OperationContract]
         void DownloadFile(byte[] arr);
 
-        // TODO: Add your service operations here
+        [OperationContract]
+        SearchResult Search(string searchStr);
     }
 
-
-    // Use a data contract as illustrated in the sample below to add composite types to service operations.
+    [DataContract]
+    public class SearchResult
+    {
+        [DataMember]
+        public List<Song> Songs { get; set; }
+        [DataMember]
+        public List<Song_Singer> Singers { get; set; }
+        [DataMember]
+        public List<Singer_Album> Albums { get; set; }
+        [DataMember]
+        public List<Song> GenreSongs { get; set; }
+    }
+    
     [DataContract]
     public class Song
     {
@@ -62,6 +77,7 @@ namespace PlayerService
         public TimeSpan Duration { get; set; }
         [DataMember]
         public ICollection<Song_Singer> Singers { get; set; }
+        [DataMember]
         public ICollection<Song> Songs { get; set; }
     }
     [DataContract]
