@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -17,6 +18,7 @@ namespace PlayerService
         string defAvatarPath = @"E:\www\uh1294526\uh1294526.ukrdomen.com\defaultAvatar.jpg";
         Player_En db = new Player_En();
 
+        #region Adds
         public void AddNewAlbum(Singer_Album NewAlbum)
         {
             try
@@ -37,12 +39,12 @@ namespace PlayerService
                 db.Albums.Add(album);
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
- 
+
         public void AddNewSinger(Song_Singer NewSinger)
         {
             try
@@ -58,17 +60,17 @@ namespace PlayerService
                     Name = NewSinger.Name,
                     ImagePath = NewSinger.Image == null ? defAvatarPath : singer_Path + "\\avatar"
                 };
-                Album album = new Album() { Title = "Singles", Singer = singer, ImagePath = defAvatarPath};
+                Album album = new Album() { Title = "Singles", Singer = singer, ImagePath = defAvatarPath };
                 db.Albums.Add(album);
                 db.Singers.Add(singer);
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-        }
 
+        }
         public void AddNewTrack(Song NewSong)
         {
             try
@@ -90,65 +92,82 @@ namespace PlayerService
                 db.Tracks.Add(track);
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw ex; 
+                throw ex;
             }
         }
+        #endregion
 
-        public List<string> BogdanLox()
+        public SearchResult Search(string searchStr)
         {
-            List<string> lst = new List<string>();
-            DirectoryInfo di = new DirectoryInfo(@"E:\www\uh1294526\uh1294526.ukrdomen.com\TestDirectory");
-            foreach (var file in di.GetFiles())
+            var tracks = db.Tracks.Where(obj => obj.Title.Contains(searchStr));
+            var singers = db.Singers.Where(obj => obj.Name.Contains(searchStr));
+            var genres = db.Tracks.Where(obj => obj.Genre.Contains(searchStr));
+            var albums = db.Albums.Where(obj => obj.Title.Contains(searchStr));
+            SearchResult searchResult = new SearchResult()
             {
-                lst.Add(file.Name);
-            }
-            return lst;
+                Songs = ConvertToListSong(tracks.ToArray()),
+                Singers = ConvertToListSong_SingersWAvatar(singers.ToArray()),
+                GenreSongs = ConvertToListSong(genres.ToArray()),
+                Albums = GetAlbumListWOSongs(albums.ToArray())
+            };
+            return searchResult;
         }
 
         public void DownloadFile(byte[] arr)
         {
-            File.WriteAllBytes(defAvatarPath,arr);
+            File.WriteAllBytes(defAvatarPath, arr);
         }
 
         public void GetFile()
         {
-            Album album1 = (from t in db.Albums where t.Album_ID == 7 select t).First();
-            album1.ImagePath = defAvatarPath;
-            Singer singer = (from t in db.Singers where t.Singer_ID == 3 select t).First();
+            Singer singer = (from t in db.Singers where t.Singer_ID == 1 select t).First();
             singer.ImagePath = defAvatarPath;
             db.SaveChanges();
         }
-        List<Song> tmpConvert(ICollection<Track> tracks)
-        {
-            List<Song> songs = new List<Song>();
-            foreach (var item in tracks)
-            {
-                songs.Add(new Song() { ID = item.Track_ID, Title = item.Title });
-            }
-            return songs;
-        }
-        public Singer_Album TempAlbum()
-        {
-            Album al = (from t in db.Albums where t.Album_ID == 3 select t).First();
-            Singer_Album album = new Singer_Album()
-            {
-                ID = 3,
-                Songs = tmpConvert(al.Tracks)
 
-            };
-            return album;
-        }
         #region Convertors
+        #region Singer
         Song_Singer ConvertToSinger(Singer singer)
         {
             return new Song_Singer()
             {
                 ID = singer.Singer_ID,
-                Name = singer.Name
+                Name = singer.Name,
+                Description = singer.Description
             };
         }
+        Song_Singer ConvertToSingerWAvatar(Singer singer)
+        {
+            return new Song_Singer()
+            {
+                ID = singer.Singer_ID,
+                Name = singer.Name,
+                Description = singer.Description,
+                Image = File.ReadAllBytes(singer.ImagePath)
+            };
+        }
+        List<Song_Singer> ConvertToListSong_SingersWAvatar(ICollection<Singer> singes)
+        {
+            List<Song_Singer> song_Singers = new List<Song_Singer>();
+            foreach (var item in singes)
+            {
+                song_Singers.Add(ConvertToSingerWAvatar(item));
+            }
+            return song_Singers;
+        }
+        List<Singer> ConvertSongToSingerList(ICollection<Song_Singer> song_Singers)
+        {
+            List<Singer> singers = new List<Singer>();
+            foreach (var song_Singer in song_Singers)
+            {
+                singers.Add((from sin in db.Singers where sin.Singer_ID == song_Singer.ID select sin).First());
+            }
+            return singers;
+        }
+        #endregion
+        #region Song
         List<Song_Singer> ConvertToListSong_Singers(ICollection<Singer> singes)
         {
             List<Song_Singer> song_Singers = new List<Song_Singer>();
@@ -180,16 +199,8 @@ namespace PlayerService
             }
             return songs;
         }
-        List<Singer> ConvertSongToSingerList(ICollection<Song_Singer> song_Singers)
-        {
-            List<Singer> singers = new List<Singer>();
-            foreach (var song_Singer in song_Singers)
-            {
-                singers.Add((from sin in db.Singers where sin.Singer_ID == song_Singer.ID select sin).First());
-            }
-            return singers;
-        }
         #endregion
+        #region Album
         public Singer_Album GetAlbum(int ID)
         {
             Album album = (from alb in db.Albums where alb.Album_ID == ID select alb).First();
@@ -225,6 +236,17 @@ namespace PlayerService
             }
             return lst;
         }
+        List<Singer_Album> GetAlbumListWOSongs(Album[] albums)
+        {
+            List<Singer_Album> lst = new List<Singer_Album>();
+            foreach (var item in albums)
+            {
+                lst.Add(GetAlbumWOSongs(item.Album_ID));
+            }
+            return lst;
+        }
+        #endregion
+        #endregion
         public Stream GetTrackStream(int ID)
         {
             Track track = (from tr in db.Tracks where tr.Track_ID == ID select tr).First();
@@ -244,10 +266,11 @@ namespace PlayerService
                 }
                 return lst;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
+
     }
 }
