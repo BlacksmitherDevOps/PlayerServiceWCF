@@ -20,7 +20,13 @@ namespace PlayerService
         void AddNewTrack(Song NewSong);
 
         [OperationContract]
+        void AddNewAlbum(Singer_Album NewAlbum);
+
+        [OperationContract]
         Singer_Album GetAlbum(int ID);
+
+        [OperationContract]
+        Song_Singer GetSingerFull(int ID);
 
         [OperationContract]
         List<Song_Singer> GetAllSingers();
@@ -29,10 +35,7 @@ namespace PlayerService
         Stream GetTrackStream(int ID);
 
         [OperationContract]
-        void AddNewAlbum(Singer_Album NewAlbum);
-
-        [OperationContract]
-        void GetFile();
+        void TempFunc();
 
         [OperationContract]
         void DownloadFile(byte[] arr);

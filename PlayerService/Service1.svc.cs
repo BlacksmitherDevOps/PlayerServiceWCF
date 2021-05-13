@@ -120,7 +120,7 @@ namespace PlayerService
             File.WriteAllBytes(defAvatarPath, arr);
         }
 
-        public void GetFile()
+        public void TempFunc()
         {
             Singer singer = (from t in db.Singers where t.Singer_ID == 1 select t).First();
             singer.ImagePath = defAvatarPath;
@@ -129,13 +129,24 @@ namespace PlayerService
 
         #region Convertors
         #region Singer
-        Song_Singer ConvertToSinger(Singer singer)
+        Song_Singer ConvertToSong_SingerInfo(Singer singer)
         {
             return new Song_Singer()
             {
                 ID = singer.Singer_ID,
                 Name = singer.Name,
                 Description = singer.Description
+            };
+        }
+        Song_Singer ConvertToSong_SingerFull(Singer singer)
+        {
+            return new Song_Singer()
+            {
+                ID = singer.Singer_ID,
+                Name = singer.Name,
+                Description = singer.Description,
+                Image = File.ReadAllBytes(singer.ImagePath),
+                Albums = GetAlbumListWSongs(singer.Albums.ToArray())
             };
         }
         Song_Singer ConvertToSingerWAvatar(Singer singer)
@@ -173,7 +184,7 @@ namespace PlayerService
             List<Song_Singer> song_Singers = new List<Song_Singer>();
             foreach (var item in singes)
             {
-                song_Singers.Add(ConvertToSinger(item));
+                song_Singers.Add(ConvertToSong_SingerInfo(item));
             }
             return song_Singers;
         }
@@ -208,11 +219,30 @@ namespace PlayerService
             {
                 ID = album.Album_ID,
                 Image = File.ReadAllBytes(album.ImagePath),
-                Singer = ConvertToSinger(album.Singer),
+                Singer = ConvertToSong_SingerInfo(album.Singer),
                 Title = album.Title,
                 Songs = ConvertToListSong(album.Tracks)
             };
             return singer_Album;
+        }
+        List<Singer_Album> GetAlbumListWSongs(int ID)
+        {
+            var albums = from alb in db.Albums where alb.Singer_Singer_ID == ID select alb;
+            List<Singer_Album> lst = new List<Singer_Album>();
+            foreach (var item in albums)
+            {
+                lst.Add(GetAlbum(item.Album_ID));
+            }
+            return lst;
+        }
+        List<Singer_Album> GetAlbumListWSongs(Album[] albums)
+        {
+            List<Singer_Album> lst = new List<Singer_Album>();
+            foreach (var item in albums)
+            {
+                lst.Add(GetAlbum(item.Album_ID));
+            }
+            return lst;
         }
         Singer_Album GetAlbumWOSongs(int ID)
         {
@@ -221,7 +251,7 @@ namespace PlayerService
             {
                 ID = album.Album_ID,
                 Image = File.ReadAllBytes(album.ImagePath),
-                Singer = ConvertToSinger(album.Singer),
+                Singer = ConvertToSong_SingerInfo(album.Singer),
                 Title = album.Title,
             };
             return singer_Album;
@@ -270,6 +300,13 @@ namespace PlayerService
             {
                 throw ex;
             }
+        }
+
+        public Song_Singer GetSingerFull(int ID)
+        {
+            var singer = (from sin in db.Singers where sin.Singer_ID == ID select sin).FirstOrDefault();
+
+            return ConvertToSong_SingerFull(singer);
         }
 
     }
