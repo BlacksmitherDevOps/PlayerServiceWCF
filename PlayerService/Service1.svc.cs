@@ -309,5 +309,9 @@ namespace PlayerService
             return ConvertToSong_SingerFull(singer);
         }
 
+        public Song_Playlist playlist(int ID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
