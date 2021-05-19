@@ -15,27 +15,51 @@ namespace PlayerService
     {
         [OperationContract]
         void AddNewSinger(Song_Singer NewSinger);
+
         [OperationContract]
         void AddNewTrack(Song NewSong);
-        [OperationContract]
-        Singer_Album GetAlbum(int ID);
-        [OperationContract]
-        Singer_Album TempAlbum();
-        [OperationContract]
-        Stream GetTrackStream(int ID);
+
         [OperationContract]
         void AddNewAlbum(Singer_Album NewAlbum);
+
         [OperationContract]
-        byte[] GetFile();
+        Singer_Album GetAlbum(int ID);
+
+        [OperationContract]
+        Song_Singer GetSingerFull(int ID);
+
+        [OperationContract]
+        List<Song_Singer> GetAllSingers();
+
+        [OperationContract]
+        Stream GetTrackStream(int ID);
+
+        [OperationContract]
+        void TempFunc();
 
         [OperationContract]
         void DownloadFile(byte[] arr);
 
-        // TODO: Add your service operations here
+        [OperationContract]
+        SearchResult Search(string searchStr);
+
+        [OperationContract]
+        Song_Playlist playlist(int ID);
     }
 
-
-    // Use a data contract as illustrated in the sample below to add composite types to service operations.
+    [DataContract]
+    public class SearchResult
+    {
+        [DataMember]
+        public List<Song> Songs { get; set; }
+        [DataMember]
+        public List<Song_Singer> Singers { get; set; }
+        [DataMember]
+        public List<Singer_Album> Albums { get; set; }
+        [DataMember]
+        public List<Song> GenreSongs { get; set; }
+    }
+    
     [DataContract]
     public class Song
     {
@@ -56,7 +80,10 @@ namespace PlayerService
         [DataMember]
         public int Album_ID { get; set; }
         [DataMember]
+        public TimeSpan Duration { get; set; }
+        [DataMember]
         public ICollection<Song_Singer> Singers { get; set; }
+        [DataMember]
         public ICollection<Song> Songs { get; set; }
     }
     [DataContract]
@@ -69,8 +96,34 @@ namespace PlayerService
         [DataMember]
         public string Description { get; set; }
         [DataMember]
+        public byte[] Image { get; set; }
+        [DataMember]
+        public string ImagePath { get; set; }
+        [DataMember]
         public ICollection<Singer_Album> Albums { get; set; }
     }
+
+    [DataContract]
+    public class Song_Playlist
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public string Title { get; set; }
+        [DataMember]
+        public string ImagePath { get; set; }
+        [DataMember]
+        public byte[] Image { get; set; }
+        [DataMember]
+        public List<Song_Singer> Singers { get; set; }
+        [DataMember]
+        public DateTime CreationDate { get; set; }
+        [DataMember]
+        public bool Custom { get; set; }
+        [DataMember]
+        public ICollection<Song> Songs { get; set; }
+    }
+
     [DataContract]
     public class Singer_Album
     {
@@ -87,20 +140,5 @@ namespace PlayerService
         [DataMember]
         public Song_Singer Singer { get; set; }
     }
-    [DataContract]
-    public class Song_Playlist
-    {
-        [DataMember]
-        public int ID { get; set; }
-        [DataMember]
-        public int Title { get; set; }
-        [DataMember]
-        public string ImagePath { get; set; }
-        [DataMember]
-        public DateTime CreationDate { get; set; }
-        [DataMember]
-        public bool Custom { get; set; }
-        [DataMember]
-        public ICollection<Song> Songs { get; set; }
-    }
+
 }

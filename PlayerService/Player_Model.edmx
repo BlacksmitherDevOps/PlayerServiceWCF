@@ -42,6 +42,7 @@
           <Property Name="Singer_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="ImagePath" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Tracks">
           <Key>
@@ -56,6 +57,7 @@
           <Property Name="Verification" Type="bit" Nullable="false" />
           <Property Name="Track_Track_ID" Type="int" />
           <Property Name="Playlist_Playlist_ID" Type="int" />
+          <Property Name="Duration" Type="time" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="TrackSingers">
           <Key>
@@ -302,6 +304,7 @@
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Albums" Relationship="uh1294526_dbModel.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" FromRole="Singer" ToRole="Album" />
           <NavigationProperty Name="Tracks" Relationship="uh1294526_dbModel.TrackSingers" FromRole="Singer" ToRole="Track" />
+          <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Track">
           <Key>
@@ -321,6 +324,7 @@
           <NavigationProperty Name="Tracks1" Relationship="uh1294526_dbModel.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" FromRole="Track" ToRole="Track1" />
           <NavigationProperty Name="Track1" Relationship="uh1294526_dbModel.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" FromRole="Track1" ToRole="Track" />
           <NavigationProperty Name="Singers" Relationship="uh1294526_dbModel.TrackSingers" FromRole="Track" ToRole="Singer" />
+          <Property Name="Duration" Type="Time" Nullable="false" Precision="7" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -455,6 +459,7 @@
           <EntitySetMapping Name="Singers">
             <EntityTypeMapping TypeName="uh1294526_dbModel.Singer">
               <MappingFragment StoreEntitySet="Singers">
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Singer_ID" ColumnName="Singer_ID" />
@@ -464,6 +469,7 @@
           <EntitySetMapping Name="Tracks">
             <EntityTypeMapping TypeName="uh1294526_dbModel.Track">
               <MappingFragment StoreEntitySet="Tracks">
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
                 <ScalarProperty Name="Playlist_Playlist_ID" ColumnName="Playlist_Playlist_ID" />
                 <ScalarProperty Name="Track_Track_ID" ColumnName="Track_Track_ID" />
                 <ScalarProperty Name="Verification" ColumnName="Verification" />
