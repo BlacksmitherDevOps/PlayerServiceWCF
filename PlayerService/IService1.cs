@@ -42,6 +42,9 @@ namespace PlayerService
 
         [OperationContract]
         SearchResult Search(string searchStr);
+
+        [OperationContract]
+        Song_Playlist playlist(int ID);
     }
 
     [DataContract]
@@ -99,6 +102,28 @@ namespace PlayerService
         [DataMember]
         public ICollection<Singer_Album> Albums { get; set; }
     }
+
+    [DataContract]
+    public class Song_Playlist
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public string Title { get; set; }
+        [DataMember]
+        public string ImagePath { get; set; }
+        [DataMember]
+        public byte[] Image { get; set; }
+        [DataMember]
+        public List<Song_Singer> Singers { get; set; }
+        [DataMember]
+        public DateTime CreationDate { get; set; }
+        [DataMember]
+        public bool Custom { get; set; }
+        [DataMember]
+        public ICollection<Song> Songs { get; set; }
+    }
+
     [DataContract]
     public class Singer_Album
     {
@@ -115,20 +140,5 @@ namespace PlayerService
         [DataMember]
         public Song_Singer Singer { get; set; }
     }
-    [DataContract]
-    public class Song_Playlist
-    {
-        [DataMember]
-        public int ID { get; set; }
-        [DataMember]
-        public int Title { get; set; }
-        [DataMember]
-        public string ImagePath { get; set; }
-        [DataMember]
-        public DateTime CreationDate { get; set; }
-        [DataMember]
-        public bool Custom { get; set; }
-        [DataMember]
-        public ICollection<Song> Songs { get; set; }
-    }
+
 }
