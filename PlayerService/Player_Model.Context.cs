@@ -31,5 +31,6 @@ namespace PlayerService
         public virtual DbSet<Singer> Singers { get; set; }
         public virtual DbSet<Track> Tracks { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<VerificationCode> VerificationCodes { get; set; }
     }
 }

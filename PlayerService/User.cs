@@ -18,7 +18,9 @@ namespace PlayerService
         public User()
         {
             this.Playlists = new HashSet<Playlist>();
-            this.Users1 = new HashSet<User>();
+            this.RecentlyPlayed = new HashSet<Track>();
+            this.Contacts = new HashSet<User>();
+            this.VerificationCodes = new HashSet<VerificationCode>();
         }
     
         public int User_ID { get; set; }
@@ -31,7 +33,11 @@ namespace PlayerService
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Playlist> Playlists { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Users1 { get; set; }
-        public virtual User User1 { get; set; }
+        public virtual ICollection<Track> RecentlyPlayed { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Contacts { get; set; }
+        public virtual User Contact { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VerificationCode> VerificationCodes { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave.SampleProviders;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,7 +24,41 @@ namespace PlayerService
         void AddNewAlbum(Singer_Album NewAlbum);
 
         [OperationContract]
+        [FaultContract(typeof(EditFailed))]
+        bool EditProfile(Client_User profile);
+
+        [OperationContract]
+        [FaultContract(typeof(LoginFailed))]
+        Client_User TryLogin(Login_User login_User);
+
+        [OperationContract]
+        [FaultContract(typeof(RegFailed))]
+        Client_User RegNewUser(Login_User login_User);
+
+        [OperationContract]
+        [FaultContract(typeof(RecoverFailed))]
+        bool RecoverPassCodeRequest(Login_User login_User);
+
+        [OperationContract]
+        [FaultContract(typeof(RecoverFailed))]
+        bool RecoverPassCodeCheck(Login_User login_User, string code);
+
+        [OperationContract]
+        [FaultContract(typeof(RecoverFailed))]
+        bool ChangePassword(Login_User login_User);
+
+        [OperationContract]
         Singer_Album GetAlbum(int ID);
+
+        [OperationContract]
+        object GetTrack(int ID, TimeSpan skipspan, TimeSpan takespan);
+
+        [OperationContract]
+        List<Song> GetRecentlyPlayed(int ID);
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        Song_Playlist GetPlaylistByID(int ID);
 
         [OperationContract]
         Song_Singer GetSingerFull(int ID);
@@ -32,10 +67,26 @@ namespace PlayerService
         List<Song_Singer> GetAllSingers();
 
         [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Playlist> GetRockToday();
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Playlist> GetPopToday();
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Playlist> GetHouseToday();
+
+        [OperationContract]
         Stream GetTrackStream(int ID);
 
         [OperationContract]
-        void TempFunc();
+        [FaultContract(typeof(LoginFailed))]
+        Song_Playlist TempFunc();
+
+        [OperationContract]
+        void tmp(byte[] img);
 
         [OperationContract]
         void DownloadFile(byte[] arr);
@@ -78,7 +129,7 @@ namespace PlayerService
         [DataMember]
         public byte[] Music { get; set; }
         [DataMember]
-        public int Album_ID { get; set; }
+        public Singer_Album Album { get; set; }
         [DataMember]
         public TimeSpan Duration { get; set; }
         [DataMember]
@@ -117,6 +168,8 @@ namespace PlayerService
         [DataMember]
         public List<Song_Singer> Singers { get; set; }
         [DataMember]
+        public string Creator { get; set; }
+        [DataMember]
         public DateTime CreationDate { get; set; }
         [DataMember]
         public bool Custom { get; set; }
@@ -141,4 +194,109 @@ namespace PlayerService
         public Song_Singer Singer { get; set; }
     }
 
+    [DataContract]
+    public class Client_User
+    {
+        [DataMember]
+        public int ID { get; set; }
+        [DataMember]
+        public string NickName { get; set; }
+        [DataMember]
+        public string Password { get; set; }    
+        [DataMember]
+        public string ImagePath { get; set; }
+        [DataMember]
+        public byte[] Image { get; set; }
+        [DataMember]
+        public ICollection<Client_User> Contacts { get; set; }
+        [DataMember]
+        public string Email { get; set; }
+        [DataMember]
+        public ICollection<Song_Playlist> Playlists { get; set; }
+
+    }
+    [DataContract]
+    public class Login_User
+    {
+        public Login_User()
+        {
+
+        }
+        public Login_User(string login, string email, string password, byte[] image)
+        {
+            Login = login;
+            Email = email;
+            Image = image;
+            Password = password;
+        }
+        [DataMember]
+        public string Login { get; set; }
+        [DataMember]
+        public string Email { get; set; }
+        [DataMember]
+        public byte[] Image { get; set; }
+        [DataMember]
+        public string Password { get; set; }
+    }
+
+    [DataContract]
+    public class LoginFailed
+    {
+        string message;
+
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
+    [DataContract]
+    public class LoadPlaylistFailed
+    {
+        string message = "Load Playlist Failed";
+
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
+    [DataContract]
+    public class RegFailed
+    {
+        string message;
+
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
+    [DataContract]
+    public class EditFailed
+    {
+        string message;
+
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
+    [DataContract]
+    public class RecoverFailed
+    {
+        string message;
+
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
 }
