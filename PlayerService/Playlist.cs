@@ -18,6 +18,7 @@ namespace PlayerService
         public Playlist()
         {
             this.Tracks = new HashSet<Track>();
+            this.Users = new HashSet<User>();
         }
     
         public int Playlist_ID { get; set; }
@@ -25,10 +26,11 @@ namespace PlayerService
         public string Title { get; set; }
         public System.DateTime CreationDate { get; set; }
         public bool Custom { get; set; }
-        public Nullable<int> User_User_ID { get; set; }
+        public int Creator_ID { get; set; }
     
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Track> Tracks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Users { get; set; }
     }
 }

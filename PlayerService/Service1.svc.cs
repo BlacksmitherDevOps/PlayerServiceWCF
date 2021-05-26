@@ -106,10 +106,10 @@ namespace PlayerService
         #endregion
         public SearchResult Search(string searchStr)
         {
-            var tracks = db.Tracks.Where(obj => obj.Title.Contains(searchStr));
-            var singers = db.Singers.Where(obj => obj.Name.Contains(searchStr));
-            var genres = db.Tracks.Where(obj => obj.Genre.Contains(searchStr));
-            var albums = db.Albums.Where(obj => obj.Title.Contains(searchStr));
+            var tracks = (db.Tracks.Where(obj => obj.Title.Contains(searchStr))).Take(4);
+            var singers = db.Singers.Where(obj => obj.Name.Contains(searchStr)).Take(4);
+            var genres = db.Tracks.Where(obj => obj.Genre.Contains(searchStr)).Take(4);
+            var albums = db.Albums.Where(obj => obj.Title.Contains(searchStr)).Take(4);
             SearchResult searchResult = new SearchResult()
             {
                 Songs = ConvertToListSong(tracks.ToArray()),
@@ -121,7 +121,6 @@ namespace PlayerService
         }
         public void DownloadFile(byte[] arr)
         {
-
             File.WriteAllBytes(dirPath + "\\Playlists\\Images\\4\\image", arr);
         }
         public Song_Playlist TempFunc()
@@ -139,7 +138,7 @@ namespace PlayerService
             return new Song_Playlist()
             {
                 ID = playlist.Playlist_ID,
-                Creator = playlist.User.NickName,
+                Creator = ConvertToClient_UserInfo(playlist.Creator_ID),
                 Custom = playlist.Custom,
                 CreationDate = playlist.CreationDate,
                 Image = File.ReadAllBytes(playlist.ImagePath),
@@ -147,14 +146,28 @@ namespace PlayerService
                 Title = playlist.Title
             };
         }
+        Song_Playlist ConvertToSong_PlaylistInfo(Playlist playlist)
+        {
+            return new Song_Playlist()
+            {
+                ID = playlist.Playlist_ID,
+                Creator = ConvertToClient_UserInfo(playlist.Creator_ID),
+                Custom = playlist.Custom,
+                CreationDate = playlist.CreationDate,
+                Title = playlist.Title
+            };
+        }
         public List<Song_Playlist> GetPopToday()
         {
             try
             {
+                Song_Playlist playlist1 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 5 select t).First());
+                Song_Playlist playlist2 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 6 select t).First());
+                Song_Playlist playlist3 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 7 select t).First());
                 List<Song_Playlist> song_Playlists = new List<Song_Playlist>();
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 5 select t).First()));
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 6 select t).First()));
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 7 select t).First()));
+                song_Playlists.Add(playlist1);
+                song_Playlists.Add(playlist2);
+                song_Playlists.Add(playlist3);
                 return song_Playlists;
             }
             catch
@@ -167,11 +180,15 @@ namespace PlayerService
         {
             try
             {
+                Song_Playlist song1 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 2 select t).First());
+                Song_Playlist song2 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 3 select t).First());
+                Song_Playlist song3 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 4 select t).First());
+                Song_Playlist song4 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 10 select t).First());
                 List<Song_Playlist> song_Playlists = new List<Song_Playlist>();
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 2 select t).First()));
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 3 select t).First()));
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 4 select t).First()));
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 10 select t).First()));
+                song_Playlists.Add(song1);
+                song_Playlists.Add(song2);
+                song_Playlists.Add(song3);
+                song_Playlists.Add(song4);
                 return song_Playlists;
             }
             catch
@@ -183,9 +200,11 @@ namespace PlayerService
         {
             try
             {
+                Song_Playlist playlist1 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 8 select t).First());
+                Song_Playlist playlist2 = ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 9 select t).First());
                 List<Song_Playlist> song_Playlists = new List<Song_Playlist>();
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 8 select t).First()));
-                song_Playlists.Add(ConvertToSong_Playlist((from t in db.Playlists where t.Playlist_ID == 9 select t).First()));
+                song_Playlists.Add(playlist1);
+                song_Playlists.Add(playlist2);
                 return song_Playlists;
             }
             catch
@@ -204,7 +223,17 @@ namespace PlayerService
                 throw new FaultException<LoadPlaylistFailed>(new LoadPlaylistFailed());
             }
         }
-            
+        public Song_Playlist GetPlaylistInfoByID(int ID)
+        {
+            try
+            {
+                return ConvertToSong_PlaylistInfo((from t in db.Playlists where t.Playlist_ID == ID select t).First());
+            }
+            catch
+            {
+                throw new FaultException<LoadPlaylistFailed>(new LoadPlaylistFailed());
+            }
+        }
         void LinkSimularSongs()
         {
                 var track = (from t in db.Tracks select t).ToArray();
@@ -215,6 +244,27 @@ namespace PlayerService
                     if (item.SimularTracks.Count < 3)
                         FindSimularTrack(item);
                 }
+        }
+        public bool AddPlaylist(Song_Playlist new_Playlist)
+        {
+            try
+            {
+                Playlist playlist = new Playlist
+                {
+                    Custom = true,
+                    Title = new_Playlist.Title,
+                    Creator_ID = new_Playlist.Creator.ID,
+                    CreationDate = DateTime.Now
+                };
+                db.Playlists.Add(playlist);
+                db.SaveChanges();
+                AddPlaylist(playlist, new_Playlist.Image);
+            }
+            catch
+            {
+                throw new FaultException<AddPlaylistFailed>(new AddPlaylistFailed { Message = "Load playlist failed!" });
+            }
+            return true;
         }
         public void tmp(byte[] img)
         {
@@ -236,7 +286,7 @@ namespace PlayerService
             {
                 Title = "Move!",
                 CreationDate = DateTime.Now,
-                User = user,
+                Creator_ID = user.User_ID,
                 Custom = false,
                 Tracks = tracks
             };
@@ -317,8 +367,8 @@ namespace PlayerService
             {
                 ID = singer.Singer_ID,
                 Name = singer.Name,
-                Description = singer.Description,
-                Image = File.ReadAllBytes(singer.ImagePath),
+                Description = singer.Description == null ? null : singer.Description,
+                Image = singer.ImagePath == null?null: File.ReadAllBytes(singer.ImagePath),
                 Albums = GetAlbumListWSongs(singer.Albums.ToArray())
             };
         }
@@ -379,7 +429,8 @@ namespace PlayerService
                 TotalListens = track.TotalListens,
                 Verification = track.Verification,
                 Album = GetAlbumInfo(track.Album_ID),
-                Singers = ConvertToListSong_Singers(track.Singers)
+                Singers = ConvertToListSong_Singers(track.Singers),
+                Duration = track.Duration
             };
         }
         List<Song> ConvertToListSong(ICollection<Track> tracks)
@@ -488,6 +539,25 @@ namespace PlayerService
         }
         #endregion
         #region User
+        Client_User ConvertToClient_UserInfo(User user)
+        {
+            return new Client_User
+            {
+                ID = user.User_ID,
+                NickName = user.NickName,
+                Email = user.Email
+            };
+        }
+        Client_User ConvertToClient_UserInfo(int ID)
+        {
+            User user = (from us in db.Users where us.User_ID == ID select us).FirstOrDefault();
+            return new Client_User
+            {
+                ID = user.User_ID,
+                NickName = user.NickName,
+                Email = user.Email
+            };
+        }
         Client_User Get_Contact(User user)
         {
             return new Client_User() { ID = user.User_ID, NickName = user.NickName, Email = user.Email, Image = File.ReadAllBytes(user.ImagePath) };
@@ -513,8 +583,8 @@ namespace PlayerService
         public Song_Singer GetSingerFull(int ID)
         {
             var singer = (from sin in db.Singers where sin.Singer_ID == ID select sin).FirstOrDefault();
-
-            return ConvertToSong_SingerFull(singer);
+            Song_Singer song_Singer = ConvertToSong_SingerFull(singer);
+            return song_Singer;
         }
         public Song_Playlist playlist(int ID)
         {
@@ -720,6 +790,35 @@ namespace PlayerService
             return trimmed;
         }
 
-       
+        public bool AddPlaylistToFavorite(int userID, int playlistID)
+        {
+            User user = (from us in db.Users where us.User_ID == userID select us).FirstOrDefault();
+            Playlist playlist = (from pl in db.Playlists where pl.Playlist_ID == playlistID select pl).FirstOrDefault();
+
+            user.Playlists.Add(playlist);
+            db.SaveChanges();
+            return true;
+        }
+
+        public List<Song_Playlist> GetUserPlaylistsInfo(int userID)
+        {
+            return Get_ListSong_Playlist_Info((from t in db.Users where t.User_ID == userID select t.Playlists).FirstOrDefault());
+        }
+
+        public bool RemoveFromPlaylistFavorite(int userID, int playlistID)
+        {
+            User user = (from us in db.Users where us.User_ID == userID select us).FirstOrDefault();
+            Playlist playlist = (from pl in db.Playlists where pl.Playlist_ID == playlistID select pl).FirstOrDefault();
+
+            user.Playlists.Remove(playlist);
+            db.SaveChanges();
+            return true;
+        }
+        public Song_Playlist GetFavoritePlaylist(int ID)
+        {
+            User user = (from us in db.Users where us.User_ID == ID select us).FirstOrDefault();
+            return null;
+        }
+
     }
 }

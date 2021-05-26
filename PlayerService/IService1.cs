@@ -61,7 +61,24 @@ namespace PlayerService
         Song_Playlist GetPlaylistByID(int ID);
 
         [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        Song_Playlist GetPlaylistInfoByID(int ID);
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        Song_Playlist GetFavoritePlaylist(int ID);
+
+        [OperationContract]
         Song_Singer GetSingerFull(int ID);
+
+        [OperationContract]
+        bool AddPlaylistToFavorite(int userID, int playlistID);
+
+        [OperationContract]
+        bool RemoveFromPlaylistFavorite(int userID, int playlistID);
+
+        [OperationContract]
+        List<Song_Playlist> GetUserPlaylistsInfo(int userID);
 
         [OperationContract]
         List<Song_Singer> GetAllSingers();
@@ -84,6 +101,10 @@ namespace PlayerService
         [OperationContract]
         [FaultContract(typeof(LoginFailed))]
         Song_Playlist TempFunc();
+
+        [OperationContract]
+        [FaultContract(typeof(AddPlaylistFailed))]
+        bool AddPlaylist(Song_Playlist new_Playlist);
 
         [OperationContract]
         void tmp(byte[] img);
@@ -168,7 +189,7 @@ namespace PlayerService
         [DataMember]
         public List<Song_Singer> Singers { get; set; }
         [DataMember]
-        public string Creator { get; set; }
+        public Client_User Creator { get; set; }
         [DataMember]
         public DateTime CreationDate { get; set; }
         [DataMember]
@@ -253,6 +274,18 @@ namespace PlayerService
     }
     [DataContract]
     public class LoadPlaylistFailed
+    {
+        string message = "Load Playlist Failed";
+
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
+    [DataContract]
+    public class AddPlaylistFailed
     {
         string message = "Load Playlist Failed";
 
