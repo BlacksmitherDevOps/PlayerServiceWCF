@@ -119,6 +119,9 @@
     <Compile Include="C__MigrationHistory.cs">
       <DependentUpon>Player_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="GenrePlaylist.cs">
+      <DependentUpon>Player_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Player_Model.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

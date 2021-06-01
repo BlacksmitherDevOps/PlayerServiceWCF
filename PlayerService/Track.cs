@@ -20,6 +20,10 @@ namespace PlayerService
             this.SimularTracks = new HashSet<Track>();
             this.Playlists = new HashSet<Playlist>();
             this.Singers = new HashSet<Singer>();
+            this.Subscriber = new HashSet<User>();
+            this.UserRecentlyPlayed = new HashSet<User>();
+            this.GenrePlaylists = new HashSet<GenrePlaylist>();
+            this.GenrePlaylists1 = new HashSet<GenrePlaylist>();
         }
     
         public int Track_ID { get; set; }
@@ -31,16 +35,22 @@ namespace PlayerService
         public bool Verification { get; set; }
         public Nullable<int> Track_Track_ID { get; set; }
         public System.TimeSpan Duration { get; set; }
-        public Nullable<int> User_User_ID { get; set; }
     
         public virtual Album Album { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Track> SimularTracks { get; set; }
         public virtual Track SimularTrack { get; set; }
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Playlist> Playlists { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Singer> Singers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Subscriber { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> UserRecentlyPlayed { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GenrePlaylist> GenrePlaylists { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GenrePlaylist> GenrePlaylists1 { get; set; }
     }
 }

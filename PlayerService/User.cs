@@ -17,10 +17,12 @@ namespace PlayerService
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.RecentlyPlayed = new HashSet<Track>();
             this.Contacts = new HashSet<User>();
             this.VerificationCodes = new HashSet<VerificationCode>();
+            this.FavoriteTracks = new HashSet<Track>();
             this.Playlists = new HashSet<Playlist>();
+            this.RecentlyPlayed = new HashSet<Track>();
+            this.FavoriteAlbums = new HashSet<Playlist>();
         }
     
         public int User_ID { get; set; }
@@ -31,13 +33,17 @@ namespace PlayerService
         public Nullable<int> User_User_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Track> RecentlyPlayed { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Contacts { get; set; }
         public virtual User Contact { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<VerificationCode> VerificationCodes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Track> FavoriteTracks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Playlist> Playlists { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Track> RecentlyPlayed { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Playlist> FavoriteAlbums { get; set; }
     }
 }

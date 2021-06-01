@@ -12,28 +12,26 @@ namespace PlayerService
     using System;
     using System.Collections.Generic;
     
-    public partial class Playlist
+    public partial class GenrePlaylist
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Playlist()
+        public GenrePlaylist()
         {
+            this.GenrePlaylists1 = new HashSet<GenrePlaylist>();
             this.Tracks = new HashSet<Track>();
-            this.Users = new HashSet<User>();
-            this.Subscribers = new HashSet<User>();
         }
     
-        public int Playlist_ID { get; set; }
+        public int GenrePlaylist_ID { get; set; }
         public string ImagePath { get; set; }
-        public string Title { get; set; }
-        public System.DateTime CreationDate { get; set; }
-        public bool Custom { get; set; }
-        public int Creator_ID { get; set; }
+        public string Genre { get; set; }
+        public Nullable<int> GenrePlaylist_GenrePlaylist_ID { get; set; }
+        public Nullable<int> Track_Track_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GenrePlaylist> GenrePlaylists1 { get; set; }
+        public virtual GenrePlaylist GenrePlaylist1 { get; set; }
+        public virtual Track Track { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Track> Tracks { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Users { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Subscribers { get; set; }
     }
 }

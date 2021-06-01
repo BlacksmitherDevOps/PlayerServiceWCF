@@ -5,23 +5,29 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="1feb962e8caf463592392d72e326f0f7" Name="Diagram1">
-        <EntityTypeShape EntityType="uh1294526_dbModel.C__MigrationHistory" Width="1.5" PointX="13.75" PointY="5.5" />
-        <EntityTypeShape EntityType="uh1294526_dbModel.Album" Width="1.5" PointX="2.75" PointY="1.5" />
-        <EntityTypeShape EntityType="uh1294526_dbModel.Playlist" Width="1.5" PointX="0.625" PointY="4.875" />
-        <EntityTypeShape EntityType="uh1294526_dbModel.Singer" Width="1.5" PointX="0.5" PointY="1.5" />
-        <EntityTypeShape EntityType="uh1294526_dbModel.Track" Width="1.5" PointX="5" PointY="0.5" />
-        <EntityTypeShape EntityType="uh1294526_dbModel.User" Width="1.5" PointX="2.625" PointY="4.75" />
-        <EntityTypeShape EntityType="uh1294526_dbModel.VerificationCode" Width="1.5" PointX="4.75" PointY="4.875" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.C__MigrationHistory" Width="1.5" PointX="5.75" PointY="5.75" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.Album" Width="1.5" PointX="3" PointY="1.875" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.Playlist" Width="1.5" PointX="3" PointY="5.75" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.Singer" Width="1.5" PointX="0.75" PointY="1.875" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.Track" Width="1.5" PointX="5.25" PointY="1" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.User" Width="1.5" PointX="7.5" PointY="1.25" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.VerificationCode" Width="1.5" PointX="9.75" PointY="1.875" />
         <AssociationConnector Association="uh1294526_dbModel.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" />
         <AssociationConnector Association="uh1294526_dbModel.FK_dbo_Tracks_dbo_Albums_Album_ID" />
         <AssociationConnector Association="uh1294526_dbModel.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" />
-        <AssociationConnector Association="uh1294526_dbModel.FK_dbo_Tracks_dbo_Users_User_User_ID" />
         <AssociationConnector Association="uh1294526_dbModel.FK_dbo_Users_dbo_Users_User_User_ID" />
         <AssociationConnector Association="uh1294526_dbModel.FK_dbo_VerificationCodes_dbo_Users_Sender_User_ID" />
         <AssociationConnector Association="uh1294526_dbModel.PlaylistTracks" />
         <AssociationConnector Association="uh1294526_dbModel.TrackSingers" />
+        <AssociationConnector Association="uh1294526_dbModel.TrackSubscribers" />
         <AssociationConnector Association="uh1294526_dbModel.UserPlaylists" />
-        </Diagram>
+        <AssociationConnector Association="uh1294526_dbModel.UserRecentlyPlayeds" />
+        <AssociationConnector Association="uh1294526_dbModel.FavoriteAlbums" />
+        <EntityTypeShape EntityType="uh1294526_dbModel.GenrePlaylist" Width="1.5" PointX="10.25" PointY="5" />
+        <AssociationConnector Association="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID" />
+        <AssociationConnector Association="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID" />
+        <AssociationConnector Association="uh1294526_dbModel.TrackGenres" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

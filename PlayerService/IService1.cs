@@ -51,10 +51,12 @@ namespace PlayerService
         Singer_Album GetAlbum(int ID);
 
         [OperationContract]
-        object GetTrack(int ID, TimeSpan skipspan, TimeSpan takespan);
+        byte[] GetTrack(int userID, int songID);
+        [OperationContract]
+        byte[] GetAlbumImage(int ID);
 
         [OperationContract]
-        List<Song> GetRecentlyPlayed(int ID);
+        Song_Playlist GetRecentlyPlayed(int ID);
 
         [OperationContract]
         [FaultContract(typeof(LoadPlaylistFailed))]
@@ -66,7 +68,12 @@ namespace PlayerService
 
         [OperationContract]
         [FaultContract(typeof(LoadPlaylistFailed))]
-        Song_Playlist GetFavoritePlaylist(int ID);
+        Song_Playlist GetFavoriteTracksPlaylist(int userID);
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Playlist> GetFavoritePlaylists(int userID);
+
 
         [OperationContract]
         Song_Singer GetSingerFull(int ID);
@@ -75,10 +82,33 @@ namespace PlayerService
         bool AddPlaylistToFavorite(int userID, int playlistID);
 
         [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        bool AddTrackToFavorite(int userID, int trackID);
+
+        [OperationContract]
+        bool AddAlbumToFavorite(int userID, int playlistID);
+
+        [OperationContract]
+        bool CloneAlbumToFavoritePlaylist(int userID, int albumID);
+
+        [OperationContract]
+        bool ClonePlaylistToFavoritePlaylist(int userID, int playlistID);
+
+        [OperationContract]
         bool RemoveFromPlaylistFavorite(int userID, int playlistID);
 
         [OperationContract]
+        bool RemoveFromTrackFavorite(int userID, int trackID);
+
+        [OperationContract]
+        [FaultContract(typeof(DeleteFailed))]
+        bool RemovePlaylist(int playlistID); 
+
+         [OperationContract]
         List<Song_Playlist> GetUserPlaylistsInfo(int userID);
+
+        [OperationContract]
+        List<Song_Playlist> GetUserFavoritePlaylistsInfo(int userID);
 
         [OperationContract]
         List<Song_Singer> GetAllSingers();
@@ -96,6 +126,14 @@ namespace PlayerService
         List<Song_Playlist> GetHouseToday();
 
         [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Playlist> GetAllGenres();
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Playlist> GetSpecialForYou(int userID);
+
+        [OperationContract]
         Stream GetTrackStream(int ID);
 
         [OperationContract]
@@ -104,13 +142,40 @@ namespace PlayerService
 
         [OperationContract]
         [FaultContract(typeof(AddPlaylistFailed))]
-        bool AddPlaylist(Song_Playlist new_Playlist);
+        Song_Playlist AddPlaylist(Song_Playlist new_Playlist);
+
+        [OperationContract]
+        [FaultContract(typeof(AddPlaylistFailed))]
+        Song_Playlist EditPlaylist(Song_Playlist new_Playlist);
+
+        [OperationContract]
+        [FaultContract(typeof(AddPlaylistFailed))]
+        Song_Playlist AddGenrePlaylist(Song_Playlist new_Playlist);
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        Song_Playlist Search_GetAllSongs(string search_str);
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Singer> Search_GetAllSongSingers(string search_str);
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Singer_Album> Search_GetAllSingerAlbums(string search_str);
+
+        [OperationContract]
+        [FaultContract(typeof(LoadPlaylistFailed))]
+        List<Song_Playlist> Search_GetAllPlaylists(string search_str);
+
+        [OperationContract]
+        bool AddSongToPlaylist(int songID, int playlistID);
+
+        [OperationContract]
+        bool DeletePlaylist(int ID);
 
         [OperationContract]
         void tmp(byte[] img);
-
-        [OperationContract]
-        void DownloadFile(byte[] arr);
 
         [OperationContract]
         SearchResult Search(string searchStr);
@@ -129,11 +194,13 @@ namespace PlayerService
         [DataMember]
         public List<Singer_Album> Albums { get; set; }
         [DataMember]
-        public List<Song> GenreSongs { get; set; }
+        public List<Song_Playlist> Playlists { get; set; }
+        [DataMember]
+        public string Search_Str { get; set; }
     }
     
     [DataContract]
-    public class Song
+    public class Song : IComparable<Song>
     {
         [DataMember]
         public int ID { get; set; }
@@ -148,6 +215,8 @@ namespace PlayerService
         [DataMember]
         public bool Verification { get; set; }
         [DataMember]
+        public byte[] Image { get; set; }
+        [DataMember]
         public byte[] Music { get; set; }
         [DataMember]
         public Singer_Album Album { get; set; }
@@ -157,6 +226,15 @@ namespace PlayerService
         public ICollection<Song_Singer> Singers { get; set; }
         [DataMember]
         public ICollection<Song> Songs { get; set; }
+
+        public int CompareTo(Song other)
+        {
+            if (other == null)
+                return 1;
+
+            else
+                return this.TotalListens.CompareTo(other.TotalListens);
+        }
     }
     [DataContract]
     public class Song_Singer
@@ -195,6 +273,8 @@ namespace PlayerService
         [DataMember]
         public bool Custom { get; set; }
         [DataMember]
+        public bool PreLoaded { get; set; }
+        [DataMember]
         public ICollection<Song> Songs { get; set; }
     }
 
@@ -229,11 +309,13 @@ namespace PlayerService
         [DataMember]
         public byte[] Image { get; set; }
         [DataMember]
-        public ICollection<Client_User> Contacts { get; set; }
-        [DataMember]
         public string Email { get; set; }
         [DataMember]
+        public ICollection<Client_User> Contacts { get; set; }
+        [DataMember]
         public ICollection<Song_Playlist> Playlists { get; set; }
+        [DataMember]
+        public ICollection<Song_Playlist> FavoritePlaylists { get; set; }
 
     }
     [DataContract]
@@ -288,6 +370,17 @@ namespace PlayerService
     public class AddPlaylistFailed
     {
         string message = "Load Playlist Failed";
+
+        [DataMember]
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
+    public class DeleteFailed
+    {
+        string message = "Delete failed";
 
         [DataMember]
         public string Message

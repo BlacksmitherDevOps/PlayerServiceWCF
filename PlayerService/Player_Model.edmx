@@ -24,6 +24,24 @@
           <Property Name="Title" Type="nvarchar(max)" />
           <Property Name="Singer_Singer_ID" Type="int" />
         </EntityType>
+        <EntityType Name="FavoriteAlbums">
+          <Key>
+            <PropertyRef Name="User_ID" />
+            <PropertyRef Name="Playlist_ID" />
+          </Key>
+          <Property Name="User_ID" Type="int" Nullable="false" />
+          <Property Name="Playlist_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GenrePlaylists">
+          <Key>
+            <PropertyRef Name="GenrePlaylist_ID" />
+          </Key>
+          <Property Name="GenrePlaylist_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ImagePath" Type="nvarchar(max)" />
+          <Property Name="Genre" Type="nvarchar(max)" />
+          <Property Name="GenrePlaylist_GenrePlaylist_ID" Type="int" />
+          <Property Name="Track_Track_ID" Type="int" />
+        </EntityType>
         <EntityType Name="Playlists">
           <Key>
             <PropertyRef Name="Playlist_ID" />
@@ -52,6 +70,14 @@
           <Property Name="Name" Type="nvarchar(max)" />
           <Property Name="ImagePath" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="TrackGenres">
+          <Key>
+            <PropertyRef Name="GenrePlaylist_ID" />
+            <PropertyRef Name="Track_ID" />
+          </Key>
+          <Property Name="GenrePlaylist_ID" Type="int" Nullable="false" />
+          <Property Name="Track_ID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Tracks">
           <Key>
             <PropertyRef Name="Track_ID" />
@@ -65,7 +91,6 @@
           <Property Name="Verification" Type="bit" Nullable="false" />
           <Property Name="Track_Track_ID" Type="int" />
           <Property Name="Duration" Type="time" Precision="7" Nullable="false" />
-          <Property Name="User_User_ID" Type="int" />
         </EntityType>
         <EntityType Name="TrackSingers">
           <Key>
@@ -75,6 +100,14 @@
           <Property Name="Track_Track_ID" Type="int" Nullable="false" />
           <Property Name="Singer_Singer_ID" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="TrackSubscribers">
+          <Key>
+            <PropertyRef Name="User_ID" />
+            <PropertyRef Name="Track_ID" />
+          </Key>
+          <Property Name="User_ID" Type="int" Nullable="false" />
+          <Property Name="Track_ID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="UserPlaylists">
           <Key>
             <PropertyRef Name="User_User_ID" />
@@ -82,6 +115,14 @@
           </Key>
           <Property Name="User_User_ID" Type="int" Nullable="false" />
           <Property Name="Playlist_Playlist_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserRecentlyPlayeds">
+          <Key>
+            <PropertyRef Name="User_ID" />
+            <PropertyRef Name="Track_ID" />
+          </Key>
+          <Property Name="User_ID" Type="int" Nullable="false" />
+          <Property Name="Track_ID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -116,6 +157,58 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_FavoriteAlbums_dbo_Playlists_Playlist_ID">
+          <End Role="Playlists" Type="Self.Playlists" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="FavoriteAlbums" Type="Self.FavoriteAlbums" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Playlists">
+              <PropertyRef Name="Playlist_ID" />
+            </Principal>
+            <Dependent Role="FavoriteAlbums">
+              <PropertyRef Name="Playlist_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_FavoriteAlbums_dbo_Users_User_ID">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="FavoriteAlbums" Type="Self.FavoriteAlbums" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="FavoriteAlbums">
+              <PropertyRef Name="User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID">
+          <End Role="GenrePlaylists" Type="Self.GenrePlaylists" Multiplicity="0..1" />
+          <End Role="GenrePlaylists1" Type="Self.GenrePlaylists" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GenrePlaylists">
+              <PropertyRef Name="GenrePlaylist_ID" />
+            </Principal>
+            <Dependent Role="GenrePlaylists1">
+              <PropertyRef Name="GenrePlaylist_GenrePlaylist_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID">
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="0..1" />
+          <End Role="GenrePlaylists" Type="Self.GenrePlaylists" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="GenrePlaylists">
+              <PropertyRef Name="Track_Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_PlaylistTracks_dbo_Playlists_Playlist_Playlist_ID">
           <End Role="Playlists" Type="Self.Playlists" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -144,6 +237,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_TrackGenres_dbo_GenrePlaylists_GenrePlaylist_ID">
+          <End Role="GenrePlaylists" Type="Self.GenrePlaylists" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrackGenres" Type="Self.TrackGenres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GenrePlaylists">
+              <PropertyRef Name="GenrePlaylist_ID" />
+            </Principal>
+            <Dependent Role="TrackGenres">
+              <PropertyRef Name="GenrePlaylist_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_TrackGenres_dbo_Tracks_Track_ID">
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrackGenres" Type="Self.TrackGenres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="TrackGenres">
+              <PropertyRef Name="Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_Tracks_dbo_Albums_Album_ID">
           <End Role="Albums" Type="Self.Albums" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -167,18 +288,6 @@
             </Principal>
             <Dependent Role="Tracks1">
               <PropertyRef Name="Track_Track_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_Tracks_dbo_Users_User_User_ID">
-          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
-          <End Role="Tracks" Type="Self.Tracks" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="User_ID" />
-            </Principal>
-            <Dependent Role="Tracks">
-              <PropertyRef Name="User_User_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -210,6 +319,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_TrackSubscribers_dbo_Tracks_Track_ID">
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrackSubscribers" Type="Self.TrackSubscribers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="TrackSubscribers">
+              <PropertyRef Name="Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_TrackSubscribers_dbo_Users_User_ID">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TrackSubscribers" Type="Self.TrackSubscribers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="TrackSubscribers">
+              <PropertyRef Name="User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_UserPlaylists_dbo_Playlists_Playlist_Playlist_ID">
           <End Role="Playlists" Type="Self.Playlists" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -235,6 +372,34 @@
             </Principal>
             <Dependent Role="UserPlaylists">
               <PropertyRef Name="User_User_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_UserRecentlyPlayeds_dbo_Tracks_Track_ID">
+          <End Role="Tracks" Type="Self.Tracks" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserRecentlyPlayeds" Type="Self.UserRecentlyPlayeds" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tracks">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="UserRecentlyPlayeds">
+              <PropertyRef Name="Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_UserRecentlyPlayeds_dbo_Users_User_ID">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserRecentlyPlayeds" Type="Self.UserRecentlyPlayeds" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="User_ID" />
+            </Principal>
+            <Dependent Role="UserRecentlyPlayeds">
+              <PropertyRef Name="User_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -265,17 +430,38 @@
         <EntityContainer Name="Хранилище uh1294526_dbModelContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Albums" EntityType="Self.Albums" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FavoriteAlbums" EntityType="Self.FavoriteAlbums" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GenrePlaylists" EntityType="Self.GenrePlaylists" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Playlists" EntityType="Self.Playlists" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlaylistTracks" EntityType="Self.PlaylistTracks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Singers" EntityType="Self.Singers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrackGenres" EntityType="Self.TrackGenres" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tracks" EntityType="Self.Tracks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TrackSingers" EntityType="Self.TrackSingers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrackSubscribers" EntityType="Self.TrackSubscribers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPlaylists" EntityType="Self.UserPlaylists" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRecentlyPlayeds" EntityType="Self.UserRecentlyPlayeds" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VerificationCodes" EntityType="Self.VerificationCodes" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_Albums_dbo_Singers_Singer_Singer_ID" Association="Self.FK_dbo_Albums_dbo_Singers_Singer_Singer_ID">
             <End Role="Singers" EntitySet="Singers" />
             <End Role="Albums" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_FavoriteAlbums_dbo_Playlists_Playlist_ID" Association="Self.FK_dbo_FavoriteAlbums_dbo_Playlists_Playlist_ID">
+            <End Role="Playlists" EntitySet="Playlists" />
+            <End Role="FavoriteAlbums" EntitySet="FavoriteAlbums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_FavoriteAlbums_dbo_Users_User_ID" Association="Self.FK_dbo_FavoriteAlbums_dbo_Users_User_ID">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="FavoriteAlbums" EntitySet="FavoriteAlbums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID" Association="Self.FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID">
+            <End Role="GenrePlaylists" EntitySet="GenrePlaylists" />
+            <End Role="GenrePlaylists1" EntitySet="GenrePlaylists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID" Association="Self.FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="GenrePlaylists" EntitySet="GenrePlaylists" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_PlaylistTracks_dbo_Playlists_Playlist_Playlist_ID" Association="Self.FK_dbo_PlaylistTracks_dbo_Playlists_Playlist_Playlist_ID">
             <End Role="Playlists" EntitySet="Playlists" />
@@ -285,6 +471,14 @@
             <End Role="Tracks" EntitySet="Tracks" />
             <End Role="PlaylistTracks" EntitySet="PlaylistTracks" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_TrackGenres_dbo_GenrePlaylists_GenrePlaylist_ID" Association="Self.FK_dbo_TrackGenres_dbo_GenrePlaylists_GenrePlaylist_ID">
+            <End Role="GenrePlaylists" EntitySet="GenrePlaylists" />
+            <End Role="TrackGenres" EntitySet="TrackGenres" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_TrackGenres_dbo_Tracks_Track_ID" Association="Self.FK_dbo_TrackGenres_dbo_Tracks_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="TrackGenres" EntitySet="TrackGenres" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_Tracks_dbo_Albums_Album_ID" Association="Self.FK_dbo_Tracks_dbo_Albums_Album_ID">
             <End Role="Albums" EntitySet="Albums" />
             <End Role="Tracks" EntitySet="Tracks" />
@@ -292,10 +486,6 @@
           <AssociationSet Name="FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" Association="Self.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID">
             <End Role="Tracks" EntitySet="Tracks" />
             <End Role="Tracks1" EntitySet="Tracks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_Tracks_dbo_Users_User_User_ID" Association="Self.FK_dbo_Tracks_dbo_Users_User_User_ID">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Tracks" EntitySet="Tracks" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_TrackSingers_dbo_Singers_Singer_Singer_ID" Association="Self.FK_dbo_TrackSingers_dbo_Singers_Singer_Singer_ID">
             <End Role="Singers" EntitySet="Singers" />
@@ -305,6 +495,14 @@
             <End Role="Tracks" EntitySet="Tracks" />
             <End Role="TrackSingers" EntitySet="TrackSingers" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_TrackSubscribers_dbo_Tracks_Track_ID" Association="Self.FK_dbo_TrackSubscribers_dbo_Tracks_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="TrackSubscribers" EntitySet="TrackSubscribers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_TrackSubscribers_dbo_Users_User_ID" Association="Self.FK_dbo_TrackSubscribers_dbo_Users_User_ID">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="TrackSubscribers" EntitySet="TrackSubscribers" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_UserPlaylists_dbo_Playlists_Playlist_Playlist_ID" Association="Self.FK_dbo_UserPlaylists_dbo_Playlists_Playlist_Playlist_ID">
             <End Role="Playlists" EntitySet="Playlists" />
             <End Role="UserPlaylists" EntitySet="UserPlaylists" />
@@ -312,6 +510,14 @@
           <AssociationSet Name="FK_dbo_UserPlaylists_dbo_Users_User_User_ID" Association="Self.FK_dbo_UserPlaylists_dbo_Users_User_User_ID">
             <End Role="Users" EntitySet="Users" />
             <End Role="UserPlaylists" EntitySet="UserPlaylists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_UserRecentlyPlayeds_dbo_Tracks_Track_ID" Association="Self.FK_dbo_UserRecentlyPlayeds_dbo_Tracks_Track_ID">
+            <End Role="Tracks" EntitySet="Tracks" />
+            <End Role="UserRecentlyPlayeds" EntitySet="UserRecentlyPlayeds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_UserRecentlyPlayeds_dbo_Users_User_ID" Association="Self.FK_dbo_UserRecentlyPlayeds_dbo_Users_User_ID">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserRecentlyPlayeds" EntitySet="UserRecentlyPlayeds" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Users_dbo_Users_User_User_ID" Association="Self.FK_dbo_Users_dbo_Users_User_User_ID">
             <End Role="Users" EntitySet="Users" />
@@ -346,10 +552,6 @@
             <End Role="Track" EntitySet="Tracks" />
             <End Role="Track1" EntitySet="Tracks" />
           </AssociationSet>
-          <AssociationSet Name="FK_dbo_Tracks_dbo_Users_User_User_ID" Association="uh1294526_dbModel.FK_dbo_Tracks_dbo_Users_User_User_ID">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Track" EntitySet="Tracks" />
-          </AssociationSet>
           <AssociationSet Name="FK_dbo_Users_dbo_Users_User_User_ID" Association="uh1294526_dbModel.FK_dbo_Users_dbo_Users_User_User_ID">
             <End Role="User" EntitySet="Users" />
             <End Role="User1" EntitySet="Users" />
@@ -366,11 +568,36 @@
             <End Role="Singer" EntitySet="Singers" />
             <End Role="Track" EntitySet="Tracks" />
           </AssociationSet>
+          <AssociationSet Name="TrackSubscribers" Association="uh1294526_dbModel.TrackSubscribers">
+            <End Role="Track" EntitySet="Tracks" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
           <AssociationSet Name="UserPlaylists" Association="uh1294526_dbModel.UserPlaylists">
             <End Role="Playlist" EntitySet="Playlists" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
-          </EntityContainer>
+          <AssociationSet Name="UserRecentlyPlayeds" Association="uh1294526_dbModel.UserRecentlyPlayeds">
+            <End Role="Track" EntitySet="Tracks" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FavoriteAlbums" Association="uh1294526_dbModel.FavoriteAlbums">
+            <End Role="Playlist" EntitySet="Playlists" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <EntitySet Name="GenrePlaylists" EntityType="uh1294526_dbModel.GenrePlaylist" />
+          <AssociationSet Name="FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID" Association="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID">
+            <End Role="GenrePlaylist" EntitySet="GenrePlaylists" />
+            <End Role="GenrePlaylist1" EntitySet="GenrePlaylists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID" Association="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID">
+            <End Role="Track" EntitySet="Tracks" />
+            <End Role="GenrePlaylist" EntitySet="GenrePlaylists" />
+          </AssociationSet>
+          <AssociationSet Name="TrackGenres" Association="uh1294526_dbModel.TrackGenres">
+            <End Role="GenrePlaylist" EntitySet="GenrePlaylists" />
+            <End Role="Track" EntitySet="Tracks" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -404,6 +631,7 @@
           <Property Name="Creator_ID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Tracks" Relationship="uh1294526_dbModel.PlaylistTracks" FromRole="Playlist" ToRole="Track" />
           <NavigationProperty Name="Users" Relationship="uh1294526_dbModel.UserPlaylists" FromRole="Playlist" ToRole="User" />
+          <NavigationProperty Name="Subscribers" Relationship="uh1294526_dbModel.FavoriteAlbums" FromRole="Playlist" ToRole="User" />
         </EntityType>
         <EntityType Name="Singer">
           <Key>
@@ -429,13 +657,15 @@
           <Property Name="Verification" Type="Boolean" Nullable="false" />
           <Property Name="Track_Track_ID" Type="Int32" />
           <Property Name="Duration" Type="Time" Nullable="false" Precision="7" />
-          <Property Name="User_User_ID" Type="Int32" />
           <NavigationProperty Name="Album" Relationship="uh1294526_dbModel.FK_dbo_Tracks_dbo_Albums_Album_ID" FromRole="Track" ToRole="Album" />
           <NavigationProperty Name="SimularTracks" Relationship="uh1294526_dbModel.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" FromRole="Track" ToRole="Track1" />
           <NavigationProperty Name="SimularTrack" Relationship="uh1294526_dbModel.FK_dbo_Tracks_dbo_Tracks_Track_Track_ID" FromRole="Track1" ToRole="Track" />
-          <NavigationProperty Name="User" Relationship="uh1294526_dbModel.FK_dbo_Tracks_dbo_Users_User_User_ID" FromRole="Track" ToRole="User" />
           <NavigationProperty Name="Playlists" Relationship="uh1294526_dbModel.PlaylistTracks" FromRole="Track" ToRole="Playlist" />
           <NavigationProperty Name="Singers" Relationship="uh1294526_dbModel.TrackSingers" FromRole="Track" ToRole="Singer" />
+          <NavigationProperty Name="Subscriber" Relationship="uh1294526_dbModel.TrackSubscribers" FromRole="Track" ToRole="User" />
+          <NavigationProperty Name="UserRecentlyPlayed" Relationship="uh1294526_dbModel.UserRecentlyPlayeds" FromRole="Track" ToRole="User" />
+          <NavigationProperty Name="GenrePlaylists" Relationship="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID" FromRole="Track" ToRole="GenrePlaylist" />
+          <NavigationProperty Name="GenrePlaylists1" Relationship="uh1294526_dbModel.TrackGenres" FromRole="Track" ToRole="GenrePlaylist" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -447,11 +677,13 @@
           <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="User_User_ID" Type="Int32" />
-          <NavigationProperty Name="RecentlyPlayed" Relationship="uh1294526_dbModel.FK_dbo_Tracks_dbo_Users_User_User_ID" FromRole="User" ToRole="Track" />
           <NavigationProperty Name="Contacts" Relationship="uh1294526_dbModel.FK_dbo_Users_dbo_Users_User_User_ID" FromRole="User" ToRole="User1" />
           <NavigationProperty Name="Contact" Relationship="uh1294526_dbModel.FK_dbo_Users_dbo_Users_User_User_ID" FromRole="User1" ToRole="User" />
           <NavigationProperty Name="VerificationCodes" Relationship="uh1294526_dbModel.FK_dbo_VerificationCodes_dbo_Users_Sender_User_ID" FromRole="User" ToRole="VerificationCode" />
+          <NavigationProperty Name="FavoriteTracks" Relationship="uh1294526_dbModel.TrackSubscribers" FromRole="User" ToRole="Track" />
           <NavigationProperty Name="Playlists" Relationship="uh1294526_dbModel.UserPlaylists" FromRole="User" ToRole="Playlist" />
+          <NavigationProperty Name="RecentlyPlayed" Relationship="uh1294526_dbModel.UserRecentlyPlayeds" FromRole="User" ToRole="Track" />
+          <NavigationProperty Name="FavoriteAlbums" Relationship="uh1294526_dbModel.FavoriteAlbums" FromRole="User" ToRole="Playlist" />
         </EntityType>
         <EntityType Name="VerificationCode">
           <Key>
@@ -502,18 +734,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_dbo_Tracks_dbo_Users_User_User_ID">
-          <End Type="uh1294526_dbModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="uh1294526_dbModel.Track" Role="Track" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="User_ID" />
-            </Principal>
-            <Dependent Role="Track">
-              <PropertyRef Name="User_User_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_dbo_Users_dbo_Users_User_User_ID">
           <End Type="uh1294526_dbModel.User" Role="User" Multiplicity="0..1" />
           <End Type="uh1294526_dbModel.User" Role="User1" Multiplicity="*" />
@@ -546,9 +766,63 @@
           <End Type="uh1294526_dbModel.Singer" Role="Singer" Multiplicity="*" />
           <End Type="uh1294526_dbModel.Track" Role="Track" Multiplicity="*" />
         </Association>
+        <Association Name="TrackSubscribers">
+          <End Type="uh1294526_dbModel.Track" Role="Track" Multiplicity="*" />
+          <End Type="uh1294526_dbModel.User" Role="User" Multiplicity="*" />
+        </Association>
         <Association Name="UserPlaylists">
           <End Type="uh1294526_dbModel.Playlist" Role="Playlist" Multiplicity="*" />
           <End Type="uh1294526_dbModel.User" Role="User" Multiplicity="*" />
+        </Association>
+        <Association Name="UserRecentlyPlayeds">
+          <End Type="uh1294526_dbModel.Track" Role="Track" Multiplicity="*" />
+          <End Type="uh1294526_dbModel.User" Role="User" Multiplicity="*" />
+        </Association>
+        <Association Name="FavoriteAlbums">
+          <End Type="uh1294526_dbModel.Playlist" Role="Playlist" Multiplicity="*" />
+          <End Type="uh1294526_dbModel.User" Role="User" Multiplicity="*" />
+        </Association>
+        <EntityType Name="GenrePlaylist">
+          <Key>
+            <PropertyRef Name="GenrePlaylist_ID" />
+          </Key>
+          <Property Name="GenrePlaylist_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Genre" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GenrePlaylist_GenrePlaylist_ID" Type="Int32" />
+          <Property Name="Track_Track_ID" Type="Int32" />
+          <NavigationProperty Name="GenrePlaylists1" Relationship="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID" FromRole="GenrePlaylist" ToRole="GenrePlaylist1" />
+          <NavigationProperty Name="GenrePlaylist1" Relationship="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID" FromRole="GenrePlaylist1" ToRole="GenrePlaylist" />
+          <NavigationProperty Name="Track" Relationship="uh1294526_dbModel.FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID" FromRole="GenrePlaylist" ToRole="Track" />
+          <NavigationProperty Name="Tracks" Relationship="uh1294526_dbModel.TrackGenres" FromRole="GenrePlaylist" ToRole="Track" />
+        </EntityType>
+        <Association Name="FK_dbo_GenrePlaylists_dbo_GenrePlaylists_GenrePlaylist_GenrePlaylist_ID">
+          <End Type="uh1294526_dbModel.GenrePlaylist" Role="GenrePlaylist" Multiplicity="0..1" />
+          <End Type="uh1294526_dbModel.GenrePlaylist" Role="GenrePlaylist1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GenrePlaylist">
+              <PropertyRef Name="GenrePlaylist_ID" />
+            </Principal>
+            <Dependent Role="GenrePlaylist1">
+              <PropertyRef Name="GenrePlaylist_GenrePlaylist_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_GenrePlaylists_dbo_Tracks_Track_Track_ID">
+          <End Type="uh1294526_dbModel.Track" Role="Track" Multiplicity="0..1" />
+          <End Type="uh1294526_dbModel.GenrePlaylist" Role="GenrePlaylist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Track">
+              <PropertyRef Name="Track_ID" />
+            </Principal>
+            <Dependent Role="GenrePlaylist">
+              <PropertyRef Name="Track_Track_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TrackGenres">
+          <End Type="uh1294526_dbModel.GenrePlaylist" Role="GenrePlaylist" Multiplicity="*" />
+          <End Type="uh1294526_dbModel.Track" Role="Track" Multiplicity="*" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -601,7 +875,6 @@
           <EntitySetMapping Name="Tracks">
             <EntityTypeMapping TypeName="uh1294526_dbModel.Track">
               <MappingFragment StoreEntitySet="Tracks">
-                <ScalarProperty Name="User_User_ID" ColumnName="User_User_ID" />
                 <ScalarProperty Name="Duration" ColumnName="Duration" />
                 <ScalarProperty Name="Track_Track_ID" ColumnName="Track_Track_ID" />
                 <ScalarProperty Name="Verification" ColumnName="Verification" />
@@ -653,6 +926,14 @@
               <ScalarProperty Name="Singer_ID" ColumnName="Singer_Singer_ID" />
             </EndProperty>
           </AssociationSetMapping>
+          <AssociationSetMapping Name="TrackSubscribers" TypeName="uh1294526_dbModel.TrackSubscribers" StoreEntitySet="TrackSubscribers">
+            <EndProperty Name="User">
+              <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+            </EndProperty>
+            <EndProperty Name="Track">
+              <ScalarProperty Name="Track_ID" ColumnName="Track_ID" />
+            </EndProperty>
+          </AssociationSetMapping>
           <AssociationSetMapping Name="UserPlaylists" TypeName="uh1294526_dbModel.UserPlaylists" StoreEntitySet="UserPlaylists">
             <EndProperty Name="User">
               <ScalarProperty Name="User_ID" ColumnName="User_User_ID" />
@@ -661,7 +942,42 @@
               <ScalarProperty Name="Playlist_ID" ColumnName="Playlist_Playlist_ID" />
             </EndProperty>
           </AssociationSetMapping>
-          </EntityContainerMapping>
+          <AssociationSetMapping Name="UserRecentlyPlayeds" TypeName="uh1294526_dbModel.UserRecentlyPlayeds" StoreEntitySet="UserRecentlyPlayeds">
+            <EndProperty Name="User">
+              <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+            </EndProperty>
+            <EndProperty Name="Track">
+              <ScalarProperty Name="Track_ID" ColumnName="Track_ID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FavoriteAlbums" TypeName="uh1294526_dbModel.FavoriteAlbums" StoreEntitySet="FavoriteAlbums">
+            <EndProperty Name="User">
+              <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+            </EndProperty>
+            <EndProperty Name="Playlist">
+              <ScalarProperty Name="Playlist_ID" ColumnName="Playlist_ID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="GenrePlaylists">
+            <EntityTypeMapping TypeName="uh1294526_dbModel.GenrePlaylist">
+              <MappingFragment StoreEntitySet="GenrePlaylists">
+                <ScalarProperty Name="Track_Track_ID" ColumnName="Track_Track_ID" />
+                <ScalarProperty Name="GenrePlaylist_GenrePlaylist_ID" ColumnName="GenrePlaylist_GenrePlaylist_ID" />
+                <ScalarProperty Name="Genre" ColumnName="Genre" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="GenrePlaylist_ID" ColumnName="GenrePlaylist_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="TrackGenres" TypeName="uh1294526_dbModel.TrackGenres" StoreEntitySet="TrackGenres">
+            <EndProperty Name="Track">
+              <ScalarProperty Name="Track_ID" ColumnName="Track_ID" />
+            </EndProperty>
+            <EndProperty Name="GenrePlaylist">
+              <ScalarProperty Name="GenrePlaylist_ID" ColumnName="GenrePlaylist_ID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
