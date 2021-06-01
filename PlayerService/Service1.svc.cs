@@ -131,7 +131,7 @@ namespace PlayerService
             if (singers.Count() < 4)
                 {
                     var singers1 = db.Singers.Where(x => x.Name.Contains(searchStr)).ToList();
-                    if (singers1 != null)
+                    if (singers1.Count > 0)
                     {
                         int i = 0;
                         while (singers.Count < 4)
@@ -154,7 +154,7 @@ namespace PlayerService
             if (genres.Count() < 4)
             {
                 var genres1 = db.Playlists.Where(x => x.Title.Contains(searchStr) && x.Custom == false).ToList();
-                if (genres1 != null)
+                if (genres1.Count > 0)
                 {
                     int i = 0;
                     while (genres.Count < 4)
@@ -176,7 +176,7 @@ namespace PlayerService
                 if (albums.Count() < 4)
                 {
                     var albums1 = db.Albums.Where(x => x.Title.Contains(searchStr)).ToList();
-                    if (albums1 != null)
+                    if (albums1.Count > 0)
                     {
                         int i = 0;
                         while (albums.Count < 4)
